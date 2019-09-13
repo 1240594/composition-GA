@@ -6,7 +6,8 @@ from deap import tools
 import numpy as np
 from PIL import Image
 import sys
-start_time = time.time()
+
+start_time = time.time() # Calculates runtime
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
@@ -14,11 +15,10 @@ toolbox = base.Toolbox()
 toolbox.register("attr_bool", random.randint, 0, 1)
 toolbox.register("individual", tools.initRepeat, creator.Individual, 
                  toolbox.attr_bool, 8000) 
-# At size 15000  and pop 3000 gen takes 50 sec to compute(ends up being way too long)
-# Size 8000 BETTER
-# pop 300 better (maximizes in more gens but much faster)
-# pop 30 better (maximizes in more gens but much faster)
-# pop 10 looks better still (however, need to test convergence/maximization)
+
+# IND Size 8000 BETTER
+# pop 1000 – 5000 anything less converges too early
+
 
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
@@ -42,11 +42,10 @@ new_A = np.array(new_A, dtype='int')
 
 #A = np.random.choice([0, 1], size=(8000))
 
-# Need to find a way to start with a an initial pop whose individual's fitness is > 0.1A
 # Higher pop seems to maximize in fewer gens (each gen takes longer to compute)
 # Very small population to ind siz ratio (i.e. 20:15000) results in very early convergence with poor fitness score (or slow progress)
 # ind=15000, gens=50000: pop=50 20h, pop=20 8h
-pop = toolbox.population(n=2000)
+pop = toolbox.population(n=5000)
 pop = (pop)
 
 
@@ -69,7 +68,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 def main():
     random.seed(42)
-    pop = toolbox.population(n=2000)
+    pop = toolbox.population(n=5000)
    
     
     print("Start of evolution")
@@ -84,7 +83,7 @@ def main():
     CXPB, MUTPB = 0.5, 0.3
     fits = [ind.fitness.values[0] for ind in pop]
     g = 0
-    while max(fits) < 1.0 and g < 10000:
+    while max(fits) < 1.0 and g < 500:
         g = g + 1
         print("-- Generation %i --" % g)
         offspring = toolbox.select(pop, len(pop))
