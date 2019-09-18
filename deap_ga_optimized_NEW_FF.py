@@ -14,7 +14,7 @@ creator.create("Individual", list, fitness=creator.FitnessMax)
 toolbox = base.Toolbox()
 toolbox.register("attr_bool", random.randint, 0, 1)
 toolbox.register("individual", tools.initRepeat, creator.Individual, 
-                 toolbox.attr_bool, 8000) 
+                 toolbox.attr_bool, 30000) 
 
 # IND Size 8000 BETTER
 # pop 1000 – 5000 anything less converges too early
@@ -23,7 +23,7 @@ toolbox.register("individual", tools.initRepeat, creator.Individual,
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # Archetype
-temp=Image.open('Guernica.png')
+temp=Image.open('Guernica_large.png')
 temp=temp.convert('1')      # Convert to black&white
 A = np.array(temp)             # Creates an array, white pixels==True and black pixels==False
 new_A=np.empty((A.shape[0],A.shape[1]),None)    #New array with same size as A
@@ -36,7 +36,7 @@ for i in range(len(A)):
             
 np.set_printoptions(threshold=sys.maxsize)
 
-new_A = np.reshape(new_A, 8000)
+new_A = np.reshape(new_A, 30000)
 new_A = np.array(new_A, dtype='int')
 
 
@@ -45,7 +45,7 @@ new_A = np.array(new_A, dtype='int')
 # Higher pop seems to maximize in fewer gens (each gen takes longer to compute)
 # Very small population to ind siz ratio (i.e. 20:15000) results in very early convergence with poor fitness score (or slow progress)
 # ind=15000, gens=50000: pop=50 20h, pop=20 8h
-pop = toolbox.population(n=5000)
+pop = toolbox.population(n=6000)
 pop = (pop)
 
 
@@ -58,7 +58,7 @@ print("\n")
 
 def evalComp(individual):
     compare = np.absolute(new_A - individual)
-    compare = np.sum(compare, axis=0)/8000
+    compare = np.sum(compare, axis=0)/30000
     return compare,
 
 toolbox.register("evaluate", evalComp)
@@ -68,7 +68,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 def main():
     random.seed(42)
-    pop = toolbox.population(n=5000)
+    pop = toolbox.population(n=6000)
    
     
     print("Start of evolution")
